@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Электростатика - Симуляция</title>
+        <link rel="stylesheet" href="../styles/main.css">
+        <script src="../scripts/electrostatic.js"></script>
+    </head>
+    <body>
+        <section id="page">
+            <header>
+                <a href="../index.html">
+                    <div class="headed">
+                        <img src="../images/home.png" alt="Хаб" width="50px" height="50px">
+                        <p>Prizma</p>
+                    </div>
+                </a>
+                <div class="headed">
+                    <h1>Электростатика - Симуляция</h1>
+                </div>
+                <div class="headed">
+                    <p>Электрончики =3</p>
+                </div>
+            </header>
+
+            <navigation>
+                <a href="electrostatic_home.html">
+                    <div class="navigated">
+                        Центр
+                        <img src="../images/info_center.png" width="80px" height="80px" alt="Симуляция напряжённости электростатического поля с двумя зарядами">
+                    </div>
+                </a>
+                <a href="electrostatic_simulation.html">
+                    <div class="navigated">
+                        Симуляция
+                        <img src="../images/simulation.png" width="80px" height="80px" alt="Симуляция напряжённости электростатического поля с двумя зарядами">
+                    </div>
+                </a>
+                <div class="navigated">
+                    <a href="electrostatic_math.html">
+                        <div class="navigated">
+                            Математика
+                            <img src="../images/math_book.png" width="80px" height="80px" alt="Симуляция напряжённости электростатического поля с двумя зарядами">
+                        </div>
+                    </a>
+                </div>
+            </navigation>
+
+            <main>
+                <canvas id="simulationCanvas" width="400px" height="400px" color = "white"></canvas>
+                <h1>
+                    Немного про управление:
+                </h1>
+                <p>
+                    СКМ и ЛКМ для изменения позиции зарядов.
+                </p>
+                <p>Заряды от -5 до 5(*10^-6[В/м])</p>
+                <input type="range" min="-10" max="10" value="-5" class="slider" id="slider1">
+                <input type="range" min="-10" max="10" value="5" class="slider" id="slider2">
+                <p>Количество векторов</p>
+                <input type="range" min="5" max="20" value="10" class="slider" id="slider_desity">
+                <h1>Информация</h1>
+                <p>Стрелочки показывают направление и силу напряжённости электростатического поля</p>
+                <p>Белые линнии - эквипотанциальные кривые</p>
+            </main>
+            <footer>
+                <p>Сделал кто-то, когда-то, где-то</p>
+            </footer>
+        </section>
+    </body>
+</html>

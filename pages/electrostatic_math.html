@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Электростатика - Математика</title>
+        <link rel="stylesheet" href="../styles/main.css">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </head>
+    <body>
+        <section id="page">
+            <header>
+                <a href="../index.html">
+                    <div class="headed">
+                        <img src="../images/home.png" alt="Хаб" width="50px" height="50px">
+                        <p>Prizma</p>
+                    </div>
+                </a>
+                <div class="headed">
+                    <h1>Электростатика - Математика</h1>
+                </div>
+                <div class="headed">
+                    <p>Электрончики =3</p>
+                </div>
+            </header>
+
+            <navigation>
+                <a href="electrostatic_home.html">
+                    <div class="navigated">
+                        Центр
+                        <img src="../images/info_center.png" width="80px" height="80px" alt="Симуляция напряжённости электростатического поля с двумя зарядами">
+                    </div>
+                </a>
+                <a href="electrostatic_simulation.html">
+                    <div class="navigated">
+                        Симуляция
+                        <img src="../images/simulation.png" width="80px" height="80px" alt="Симуляция напряжённости электростатического поля с двумя зарядами">
+                    </div>
+                </a>
+                <div class="navigated">
+                    <a href="electrostatic_math.html">
+                        <div class="navigated">
+                            Математика
+                            <img src="../images/math_book.png" width="80px" height="80px" alt="Симуляция напряжённости электростатического поля с двумя зарядами">
+                        </div>
+                    </a>
+                </div>
+            </navigation>
+
+            <main>
+                <h1>Напряжённость электрического поля</h1>
+                <p>
+                    Напряжённость электри́ческого по́ля — векторная физическая величина, характеризующая электрическое поле в данной точке и равная отношению силы \(\vec {F}\) действующей на неподвижный точечный заряд, помещённый в данную точку поля, к величине этого заряда \(q\):
+                    $${\displaystyle {\vec {E}}={\frac {\vec {F}}{q}}.}$$
+                </p>
+                <p>
+                    Напряжённость электрического поля иногда называют силовой характеристикой электрического поля, так как всё отличие от вектора силы, действующей на заряженную частицу, состоит в постоянном множителе. 
+                </p>
+                <p>
+                    По закону Кулона, если поле создается несколькими точечными зарядами, то на пробный заряд \(q\) действует со стороны заряда \(Q_i\) такая сила \({\vec{F_i}}\), как если бы других зарядов не было. Результирующая сила определится выражением: 
+                    $${\displaystyle {\vec {F}}=\sum \limits _{i}{\frac {1}{4\pi \varepsilon _{0}}}{\frac {qQ_{i}}{r_{i}^{2}}}{\frac {{\vec {r}}_{i}}{|r_{i}|}}=\sum \limits _{i}{\vec {F}}_{i},}$$
+                    где \({\displaystyle {\vec {r}}_{i}}\) — вектор от заряда \(Q_{i}\) к заряду \(q\), а \({\displaystyle {\frac {{\vec {r}}_{i}}{|r_{i}|}}}\) — единичный вектор в том же направлении, характеризующий направление поля.
+                </p>
+                
+                <p>
+                    \({\displaystyle \varepsilon _{0}}\) — электрическая постоянная вакуума, равная:
+                    $${\displaystyle \varepsilon _{0}\approx {10^{-9} \over 36\pi }\approx 8.854187817\times 10^{-12}}$$
+                    Постоянная Кулона равна:
+                    $${\displaystyle k_{0}\approx {\frac {1}{4\pi \varepsilon _{0}}}\approx 8.987551787\times 10^{9}}$$
+                </p>
+                <p>
+                    Если всё подставить и сократить, то получается, что напряжённость электростатического поля в данной точке можно найти по формуле:
+                    $${\displaystyle {\vec {E}}=\sum \limits _{i}{k_0}{\frac {Q_{i}}{r_{i}^{2}}}{\frac {{\vec {r}}_{i}}{|r_{i}|}}}$$
+                </p>
+                <p>
+                    Напряжённость электрического поля в Международной системе единиц (СИ) измеряется в вольтах на метр [В/м] или в ньютонах на кулон [Н/Кл]. 
+                </p>
+
+                <h1>Моя симуляция</h1>
+                <p>
+                    Моя симуляция, собственно, делает всё по одной формуле, описаной выше. Только для всех точек и с каждым зарядом.
+                </p>
+            </main>
+            <footer>
+                <p>Сделал кто-то, когда-то, где-то</p>
+            </footer>
+        </section>
+    </body>
+</html>
