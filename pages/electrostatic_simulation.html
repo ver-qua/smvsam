@@ -51,13 +51,31 @@
                     Немного про управление:
                 </h1>
                 <p>
-                    СКМ и ЛКМ для изменения позиции зарядов.
+                    СКМ и ЛКМ по изображения для изменения позиции зарядов.
                 </p>
-                <p>Заряды от -5 до 5(*10^-6[В/м])</p>
-                <input type="range" min="-10" max="10" value="-5" class="slider" id="slider1">
-                <input type="range" min="-10" max="10" value="5" class="slider" id="slider2">
+                <p>Заряды:</p>
+                <p id="p_charge1">-5 * 10^-6 В/м</p>
+                <input type="range" min="-10" max="10" value="-5" class="slider" id="slider_charge1">
+
+                <p id="p_charge2">5 * 10^-6 В/м</p>
+                <input type="range" min="-10" max="10" value="5" class="slider" id="slider_charge2">
+
+                <p>Яркость</p>
+                <input type="range" min="1" max="30" value="20" class="slider" id="slider_brightness">
+
                 <p>Количество векторов</p>
                 <input type="range" min="5" max="20" value="10" class="slider" id="slider_desity">
+
+                <div class="headed">
+                    <p>Отображать эквипотанциальные линнии:</p>
+                    <input type="checkbox" id="checkbox_equipotentials">
+                </div>
+                
+                <div class="headed">
+                    <p>Упростить рендер эквипотанциальных линний:</p>
+                    <input type="checkbox" id="checkbox_easy_render">
+                </div>
+
                 <h1>Информация</h1>
                 <p>Стрелочки показывают направление и силу напряжённости электростатического поля</p>
                 <p>Белые линнии - эквипотанциальные кривые</p>

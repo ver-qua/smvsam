@@ -3,40 +3,46 @@ var charge1 = {x: 300, y: 100, q: -1 * Math.pow(10, -6)};
 var charge2 = {x: 100, y: 100, q: 1 * Math.pow(10, -6)};
 
 var equipotential_count = 10;
+
 var max_potential = 20;
 var min_potential = 0.5;
-var equipotentials = new Array();
 
-var canvas = document.getElementById("simulationCanvas");
+var equipotentials = new Array();
 var density = 10;
 
-function calculateEquipotentials()
+var render_equipotentials = false;
+
+var easy_render = false;
+
+var brightness = 20 
+
+var canvas = document.getElementById("simulationCanvas");
+
+var calculateEquipotentials = () =>
 {
     equipotentials = equipotentials.splice(0, equipotentials.length);
 
     for(let i = 0; i <= equipotential_count; i++)
-    {
         equipotentials.push(min_potential + (max_potential - min_potential) / equipotential_count * i);
-    }
 }
 
-function lenght(vec)
+var lenght = (vec) =>
 {
     return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
 }
 
-function mult_vec(vec, exp)
+var mult_vec = (vec, exp) =>
 {
     return {x: vec.x * exp, y: vec.y * exp}
 }
 
-function normalized(vec)
+var normalized = (vec) =>
 {
     const l = lenght(vec)
     return {x: vec.x / l, y: vec.y / l}
 }
 
-function calculateStrengthVector(x, y, charge1, charge2) 
+var calculateStrengthVector = (x, y, charge1, charge2) => 
 {
     const r1 = Math.sqrt(Math.pow(x - charge1.x, 2) + Math.pow(y - charge1.y, 2));
     const r2 = Math.sqrt(Math.pow(x - charge2.x, 2) + Math.pow(y - charge2.y, 2));
@@ -53,7 +59,7 @@ function calculateStrengthVector(x, y, charge1, charge2)
     return {x: fieldX, y: fieldY};
 }
 
-function drawField()
+var drawField = () =>
 {
     const ctx = canvas.getContext("2d");
 
@@ -62,12 +68,13 @@ function drawField()
 
     arrow_size = density / 2.5;
 
-    for(let i = 0; i < canvas.width; i++)
+    for(let i = 0; i < canvas.width;)
     {
-        for(let j = 0; j < canvas.height; j++)
+        for(let j = 0; j < canvas.height;)
         {
             // Направление и величина напряжённости
             const strength = calculateStrengthVector(i, j, charge1, charge2);
+
             // Длинна вектора напряжённости
             const len = lenght(strength);
 
@@ -77,7 +84,7 @@ function drawField()
 
                 ctx.lineWidth = arrow_size / 2;
 
-                ctx.strokeStyle = `rgb(0, ${len * 20 + 12}, 0)`;
+                ctx.strokeStyle = `rgb(0, ${len * brightness + brightness / 2}, 0)`;
 
                 const norm_strength = mult_vec(normalized(strength), arrow_size * 2);
 
@@ -105,16 +112,25 @@ function drawField()
                 ctx.stroke();
             }
             
-            ctx.fillStyle = "white";
-
-            for(let o = 0; o < equipotential_count; o++)
+            if(render_equipotentials && !((i * easy_render) % 2))
             {
-                if(len < equipotentials[o] + equipotentials[o] / 40 && len > equipotentials[o] - equipotentials[o] / 40)
-                {
-                    ctx.fillRect(i, j, 1, 1);
-                }
+                ctx.fillStyle = "white";
+
+                for(let o = 0; o < equipotential_count; o++)
+                    if(len < equipotentials[o] + equipotentials[o] / 40 && len > equipotentials[o] - equipotentials[o] / 40)
+                        ctx.fillRect(i, j, 1, 1);
             }
+
+            if(render_equipotentials)
+                j++;
+            else
+                j += density;
         }
+
+        if(render_equipotentials)
+                i++;
+            else
+                i += density;
     }
     
     //Сами заряды
@@ -148,18 +164,29 @@ function drawField()
     requestAnimationFrame(drawField);
 }
 
-function changeCharge(charge, x, y)
+var changeCharge = (charge, x, y) =>
 {
     charge.x = x;
     charge.y = y;
 }
 
-document.addEventListener('DOMContentLoaded', function()
+document.addEventListener('DOMContentLoaded', (event) =>
 {
     canvas = document.getElementById("simulationCanvas");
-    slider1 = document.getElementById("slider1");
-    slider2 = document.getElementById("slider2");
-    slider_desity = document.getElementById("slider_desity");
+    var slider_charge1 = document.getElementById("slider_charge1");
+    var p_charge1 = document.getElementById("p_charge1");
+
+    var slider_charge2 = document.getElementById("slider_charge2");
+    var p_charge2 = document.getElementById("p_charge2");
+
+    var checkbox_equipotentials = document.getElementById("checkbox_equipotentials"); 
+
+    var slider_desity = document.getElementById("slider_desity");
+
+    var checkbox_easy_render = document.getElementById("checkbox_easy_render");
+
+    var slider_brightness = document.getElementById("slider_brightness");
+
     calculateEquipotentials();
 
     var left_hold = false;
@@ -168,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function()
     var lust_x = 0;
     var lust_y = 0;
 
-    document.addEventListener('mousedown', function(event) 
+    document.addEventListener('mousedown', (event) =>
     {
         const rect = canvas.getBoundingClientRect();
         lust_x = event.clientX - rect.left;
@@ -188,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function()
             changeCharge(charge2, lust_x, lust_y);
     });
 
-    document.addEventListener('mouseup', function(event) 
+    document.addEventListener('mouseup', (event) =>
     {
         const rect = canvas.getBoundingClientRect();
         lust_x = event.clientX - rect.left;
@@ -208,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function()
             changeCharge(charge2, lust_x, lust_y);
     });
 
-    document.addEventListener('mousemove', function(event)
+    document.addEventListener('mousemove', (event) =>
     {
         const rect = canvas.getBoundingClientRect();
         lust_x = event.clientX - rect.left;
@@ -223,11 +250,31 @@ document.addEventListener('DOMContentLoaded', function()
             changeCharge(charge2, lust_x, lust_y);
     })
 
-    document.addEventListener('input', function(event)
+    document.addEventListener('input', (event) =>
     {
-        charge1.q = slider1.value * Math.pow(10, -6);
-        charge2.q = slider2.value * Math.pow(10, -6);
-        density = slider_desity.value * 1;
+        if(event.target.id == "slider_charge1")
+        {
+            charge1.q = slider_charge1.value * Math.pow(10, -6);
+            p_charge1.textContent = `${slider_charge1.value} * 10^-6 В/м`;
+        }
+
+        if(event.target.id == "slider_charge2")
+        {
+            charge2.q = slider_charge2.value * Math.pow(10, -6);
+            p_charge2.textContent = `${slider_charge2.value} * 10^-6 В/м`;    
+        }
+
+        if(event.target.id == "slider_brightness")
+            brightness = slider_brightness.value * 1;
+
+        if(event.target.id == "slider_desity")
+            density = slider_desity.min * 1 + slider_desity.max * 1 - slider_desity.value * 1;
+
+        if(event.target.id == "checkbox_equipotentials")
+            render_equipotentials = checkbox_equipotentials.checked;
+
+        if(event.target.id == "checkbox_easy_render")
+            easy_render = checkbox_easy_render.checked;
     })
     
     drawField();
