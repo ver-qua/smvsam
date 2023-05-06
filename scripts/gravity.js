@@ -5,6 +5,10 @@ var simulation_speed = 1;
 var canvas = 0;
 var ctx = 0;
 
+var left_hold = false;
+
+var creation_start = new vec();
+
 class vec
 {
     constructor(x = 0, y = 0)
@@ -129,41 +133,27 @@ var frame = () =>
 document.addEventListener('mousedown', (event) =>
 {
     const rect = canvas.getBoundingClientRect();
-    lust_x = event.clientX - rect.left;
-    lust_y = event.clientY - rect.top;
+    var lust_x = event.clientX - rect.left;
+    var lust_y = event.clientY - rect.top;
 
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
-        return 0
+        return 0;
 
     if(event.button === 0)
         left_hold = false;
-    else if(event.button === 1)
-        mid_hold = false;
-
-    if(left_hold)
-        changeCharge(charge1, lust_x, lust_y);
-    if(mid_hold)
-        changeCharge(charge2, lust_x, lust_y);
 });
 
 document.addEventListener('mouseup', (event) =>
 {
     const rect = canvas.getBoundingClientRect();
-    lust_x = event.clientX - rect.left;
-    lust_y = event.clientY - rect.top;
+    var lust_x = event.clientX - rect.left;
+    var lust_y = event.clientY - rect.top;
     
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
         return 0
 
     if(event.button === 0)
-        left_hold = false;
-    else if(event.button === 1)
-        mid_hold = false;
-
-    if(left_hold)
-        changeCharge(charge1, lust_x, lust_y);
-    if(mid_hold)
-        changeCharge(charge2, lust_x, lust_y);
+        left_hold = true;
 });
 
 document.addEventListener('DOMContentLoaded', (event) =>
