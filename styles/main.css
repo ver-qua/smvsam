@@ -8,12 +8,14 @@ body
 a 
 {
     color: lightblue;
+    text-decoration: none;
 }
 
 a:hover 
 {
     color: lightcyan;
     font-weight: bold;
+    text-decoration: underline dashed;
 }
 
 h1

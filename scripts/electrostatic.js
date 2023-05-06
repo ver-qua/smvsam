@@ -16,7 +16,9 @@ var easy_render = false;
 
 var brightness = 20 
 
-var canvas = document.getElementById("simulationCanvas");
+var canvas = 0;
+
+var ctx = 0;
 
 var calculateEquipotentials = () =>
 {
@@ -61,8 +63,6 @@ var calculateStrengthVector = (x, y, charge1, charge2) =>
 
 var drawField = () =>
 {
-    const ctx = canvas.getContext("2d");
-
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -173,6 +173,8 @@ var changeCharge = (charge, x, y) =>
 document.addEventListener('DOMContentLoaded', (event) =>
 {
     canvas = document.getElementById("simulationCanvas");
+    ctx = canvas.getContext("2d");
+
     var slider_charge1 = document.getElementById("slider_charge1");
     var p_charge1 = document.getElementById("p_charge1");
 
