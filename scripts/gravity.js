@@ -65,7 +65,7 @@ Scene.push(new Entity("Yo", 10, new vec(100, 100), new vec(0, 0), 10, '#00FF00')
 Scene.push(new Entity("Yo0.5", 50, new vec(360, 400), new vec(0, 0), 10));
 Scene.push(new Entity("Yo1", 10, new vec(460, 400), new vec(0, 0), 10));
 
-var solve = () =>
+var solve_physics = () =>
 {
     for(i = 0; i < Scene.length; i++)
     {   
@@ -79,6 +79,9 @@ var solve = () =>
 
             if(r.length() > Scene[j].size + Scene[i].size)
                 forse = forse.add(r.normalized().mul(G * (Scene[j].mass * Scene[i].mass) / r.length() ** 2));
+            else
+                Scene[j].speed = Scene[j].speed.mul(-1);
+            
         }
         
         Scene[i].acceleration = forse.div(Scene[i].mass);
@@ -89,10 +92,8 @@ var solve = () =>
     }
 }
 
-var view = () =>
+var view_entities = () =>
 {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     for(i = 0; i < Scene.length; i++)
     {   
         ctx.beginPath();
@@ -112,10 +113,16 @@ var view = () =>
     }
 }
 
+var view_creation = () =>
+{
+    
+}
+
 var frame = () =>
 {
-    solve();
-    view();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    solve_physics();
+    view_entities();
     requestAnimationFrame(frame);
 }
 
