@@ -15,7 +15,7 @@ var handmade_mass = 10;
 var handmade_size = 10;
 var handmade_color = "#aaff00";
 
-var example_select_value = 2;
+var example_select_value = 1;
 
 var substep_count = 4;
 
@@ -40,6 +40,16 @@ class vec
     add(adder)
     {
         return new vec(this.x + adder.x, this.y + adder.y);
+    }
+
+    add_scalar(scalar)
+    {
+        return new vec(this.x + scalar, this.y + scalar);
+    }
+
+    sub_scalar(scalar)
+    {
+        return new vec(this.x - scalar, this.y - scalar);
     }
 
     sub(subber)
@@ -129,6 +139,32 @@ var copy_arr = (from, to) =>
     }
 }
 
+var new_position = (forse, entity) =>
+{
+    entity.acceleration = forse.div(entity.mass);
+
+    entity.speed = entity.speed.add(entity.acceleration.mul(simulation_speed));
+
+    entity.position = entity.position.add(entity.speed.mul(simulation_speed));
+}
+
+var rk4 = (forse, entity) =>
+{
+    let k1 = {...entity};
+    new_position(forse, k1);
+
+    let k2 = {...k1};
+    new_position(forse.add_scalar(simulation_speed / 2), entity.add(k1.mul(simulation_speed / 2)));
+
+    let k3 = {...k2};
+    new_position(forse.add_scalar(simulation_speed / 2), entity.add(k2.mul(simulation_speed / 2)));
+
+    let k4 = {...k3};
+    new_position(forse.add_scalar(simulation_speed), entity.add(k3.mul(simulation_speed)));
+
+    entity.position.add((k1.position.add(k2.position).add(k2.position.mul(2)).add(k3.position.mul(2)).add(k4.position).mul(simulation_speed / 6)));
+}
+
 var solve_physics = () =>
 {
     for(i = 0; i < Scene.length; i++)
@@ -145,17 +181,9 @@ var solve_physics = () =>
                 forse = forse.add(r.normalized().mul(G * (Scene[j].mass * Scene[i].mass) / r.length() ** 2));
             else
                 Scene[j].speed = Scene[j].speed.mul(-1);
-            
         }
         
-        Scene[i].acceleration = forse.div(Scene[i].mass);
-
-        for(j = 0; j <= substep_count; j++)
-        {
-            Scene[i].speed = Scene[i].speed.add(Scene[i].acceleration.mul(simulation_speed / (substep_count - 1)));
-        
-            Scene[i].position = Scene[i].position.add(Scene[i].speed.mul(simulation_speed / (substep_count - 1)));
-        }
+        new_position(forse, Scene[i]);
     }
 }
 
