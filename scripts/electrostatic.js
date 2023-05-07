@@ -175,19 +175,8 @@ document.addEventListener('DOMContentLoaded', (event) =>
     canvas = document.getElementById("simulationCanvas");
     ctx = canvas.getContext("2d");
 
-    var slider_charge1 = document.getElementById("slider_charge1");
     var p_charge1 = document.getElementById("p_charge1");
-
-    var slider_charge2 = document.getElementById("slider_charge2");
     var p_charge2 = document.getElementById("p_charge2");
-
-    var checkbox_equipotentials = document.getElementById("checkbox_equipotentials"); 
-
-    var slider_desity = document.getElementById("slider_desity");
-
-    var checkbox_easy_render = document.getElementById("checkbox_easy_render");
-
-    var slider_brightness = document.getElementById("slider_brightness");
 
     calculateEquipotentials();
 
@@ -256,27 +245,27 @@ document.addEventListener('DOMContentLoaded', (event) =>
     {
         if(event.target.id == "slider_charge1")
         {
-            charge1.q = slider_charge1.value * Math.pow(10, -6);
-            p_charge1.textContent = `${slider_charge1.value} * 10^-6 В/м`;
+            charge1.q = event.target.value * Math.pow(10, -6);
+            p_charge1.textContent = `${event.target.value} * 10^-6 В/м`;
         }
 
         if(event.target.id == "slider_charge2")
         {
-            charge2.q = slider_charge2.value * Math.pow(10, -6);
-            p_charge2.textContent = `${slider_charge2.value} * 10^-6 В/м`;    
+            charge2.q = event.target.value * Math.pow(10, -6);
+            p_charge2.textContent = `${event.target.value} * 10^-6 В/м`;    
         }
 
         if(event.target.id == "slider_brightness")
-            brightness = slider_brightness.value * 1;
+            brightness = event.target.value * 1;
 
         if(event.target.id == "slider_desity")
-            density = slider_desity.min * 1 + slider_desity.max * 1 - slider_desity.value * 1;
+            density = event.target.min * 1 + event.target.max * 1 - event.target.value * 1;
 
         if(event.target.id == "checkbox_equipotentials")
-            render_equipotentials = checkbox_equipotentials.checked;
+            render_equipotentials = event.target.checked;
 
         if(event.target.id == "checkbox_easy_render")
-            easy_render = checkbox_easy_render.checked;
+            easy_render = event.target.checked;
     })
     
     drawField();

@@ -41,7 +41,7 @@
             </navigation>
 
             <main>
-                <canvas id="simulationCanvas" width="400px" height="400px" color = "white"></canvas>
+                <canvas id="simulationCanvas" width="500px" height="500px" color = "white"></canvas>
                 <h1>
                     Немного про управление:
                 </h1>
@@ -49,25 +49,25 @@
                     СКМ и ЛКМ по изображения для изменения позиции зарядов.
                 </p>
                 <p>Заряды:</p>
-                <p id="p_charge1">-5 * 10^-6 В/м</p>
+                <label for="slider_charge1" id="p_charge1">-5 * 10^-6 В/м</label>
                 <input type="range" min="-10" max="10" value="-5" class="slider" id="slider_charge1">
 
-                <p id="p_charge2">5 * 10^-6 В/м</p>
+                <label for="slider_charge2" id="p_charge2">5 * 10^-6 В/м</label>
                 <input type="range" min="-10" max="10" value="5" class="slider" id="slider_charge2">
 
-                <p>Яркость</p>
+                <label for="slider_brightness">Яркость</label>
                 <input type="range" min="1" max="30" value="20" class="slider" id="slider_brightness">
 
-                <p>Количество векторов</p>
+                <label for="slider_desity">Количество векторов</label>
                 <input type="range" min="5" max="20" value="10" class="slider" id="slider_desity">
 
                 <div class="headed">
-                    <p>Отображать эквипотанциальные линнии:</p>
+                    <label for="checkbox_equipotentials">Отображать эквипотанциальные линнии:</label>
                     <input type="checkbox" id="checkbox_equipotentials">
                 </div>
                 
                 <div class="headed">
-                    <p>Упростить рендер эквипотанциальных линний:</p>
+                    <label for="checkbox_easy_render">Упростить рендер эквипотанциальных линний:</label>
                     <input type="checkbox" id="checkbox_easy_render">
                 </div>
 
