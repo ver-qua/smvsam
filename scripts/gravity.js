@@ -1,6 +1,6 @@
-const G = 1;//6.67430*10**-11;
+const G = 1;
 
-var simulation_speed = 0.5;
+var simulation_step = 0.5;
 
 var canvas = 0;
 var ctx = 0;
@@ -68,7 +68,7 @@ class vec
         return new vec(this.x / len, this.y / len);
     }
 
-    copy()
+    clone()
     {
         return new vec(this.x, this.y);
     }
@@ -79,21 +79,14 @@ var creation_end = new vec();
 
 class Entity
 {
-    constructor(name, mass, position, speed, size, color = "#ffffff")
+    constructor(name, mass, position, velocity, size, color = "#ffffff")
     {
         this.name = name;
         this.mass = mass;
         this.position = position;
-        this.speed = speed;
+        this.velocity = velocity;
         this.size = size;
         this.color = color;
-        this.acceleration = new vec(0, 0);
-    }
-
-    copy()
-    {
-        let tmp = new Entity(this.name, this.mass, this.speed.copy(), this.size, this.color);
-        tmp.acceleration = this.acceleration.copy();
     }
 }
 
@@ -110,7 +103,7 @@ var set_example = () =>
 
             Scene.push(new Entity("Alpha", 0.1, new vec(150, 250), new vec(0, -3.2), 5, "#c66d29"));
             Scene.push(new Entity("Beta", 0.1, new vec(100, 250), new vec(0, -2.6), 5, "#29c675"));
-            Scene.push(new Entity("Beta", 0.1, new vec(50, 250), new vec(0, -2.2), 5, "#4459e2"));
+            Scene.push(new Entity("Gamma", 0.1, new vec(50, 250), new vec(0, -2.2), 5, "#4459e2"));
             break;
         case 2:
             Scene.push(new Entity("LSun", 1000, new vec(230, 250), new vec(0, 3.5), 7, "#ffff00"));
@@ -118,51 +111,81 @@ var set_example = () =>
 
             Scene.push(new Entity("Alpha", 0.1, new vec(150, 250), new vec(0, -4.2), 5, "#c66d29"));
             Scene.push(new Entity("Beta", 0.1, new vec(100, 250), new vec(0, -3.6), 5, "#29c675"));
-            Scene.push(new Entity("Beta", 0.1, new vec(50, 250), new vec(0, -3.2), 5, "#4459e2"));
+            Scene.push(new Entity("Gamma", 0.1, new vec(50, 250), new vec(0, -3), 5, "#4459e2"));
             break;
         case 3:
-            Scene.push(new Entity("Sun", 1000, new vec(250, 250), new vec(), 10, "#ffff00"));
-
-            Scene.push(new Entity("Alpha", 0.1, new vec(150, 250), new vec(0, -3.2), 5, "#c66d29"));
-            Scene.push(new Entity("Beta", 0.1, new vec(100, 250), new vec(0, -2.6), 5, "#29c675"));
-            Scene.push(new Entity("Beta", 0.1, new vec(50, 250), new vec(0, -2.2), 5, "#4459e2"));
+            Scene.push(new Entity("Alpha", 100, new vec(300, 250), new vec(-1, 0), 8, "#c66d29"));
+            Scene.push(new Entity("Beta", 100, new vec(200, 250), new vec(0, -1), 8, "#29c675"));
+            Scene.push(new Entity("Gamma", 100, new vec(250, 175), new vec(1, 0), 8, "#4459e2"));
             break;
     }
 }
 
-var copy_arr = (from, to) =>
+var next_velocity = (velocity, forse, mass, step) =>
 {
-    to = [];
-    for(i = 0; i < from.size; i++)
-    {
-        to.push(from[i].copy());
-    }
+    result_velocity = velocity.add(forse.div(mass).mul(step));
+    return result_velocity;
 }
 
-var new_position = (forse, entity) =>
+var next_position = (position, velocity, step) =>
 {
-    entity.acceleration = forse.div(entity.mass);
-
-    entity.speed = entity.speed.add(entity.acceleration.mul(simulation_speed));
-
-    entity.position = entity.position.add(entity.speed.mul(simulation_speed));
+    result_position = position.add(velocity.mul(step));
+    return result_position;
 }
 
-var rk4 = (forse, entity) =>
+var euler = (entity, forse) =>
 {
-    let k1 = {...entity};
-    new_position(forse, k1);
+    let velocity_0 = entity.velocity.clone();
+    let position_0 = entity.position.clone();
+    let mass = entity.mass;
 
-    let k2 = {...k1};
-    new_position(forse.add_scalar(simulation_speed / 2), entity.add(k1.mul(simulation_speed / 2)));
+    var result_velocity = next_velocity(velocity_0, forse, mass, simulation_step / 2);
+    var result_position = next_position(position_0, result_velocity, simulation_step / 2);
 
-    let k3 = {...k2};
-    new_position(forse.add_scalar(simulation_speed / 2), entity.add(k2.mul(simulation_speed / 2)));
+    result_velocity = next_velocity(result_velocity, forse, mass, simulation_step / 2);
+    result_position = next_position(result_position, result_velocity, simulation_step / 2);
 
-    let k4 = {...k3};
-    new_position(forse.add_scalar(simulation_speed), entity.add(k3.mul(simulation_speed)));
+    entity.velocity = result_velocity.clone();
+    entity.position = result_position.clone();
+}
 
-    entity.position.add((k1.position.add(k2.position).add(k2.position.mul(2)).add(k3.position.mul(2)).add(k4.position).mul(simulation_speed / 6)));
+var rk4 = (entity, forse) =>
+{
+    let velocity_0 = entity.velocity.clone();
+    let position_0 = entity.position.clone();
+    let mass = entity.mass;
+
+    var result_velocity = next_velocity(velocity_0, forse, mass, simulation_step);
+    var result_position = next_position(position_0, result_velocity, simulation_step);
+
+    var k1_velocity = velocity_0.clone();
+    var k1_position = position_0.clone();
+
+    var k2_velocity = next_velocity(k1_velocity.mul(simulation_step / 2).add(velocity_0), forse, mass, simulation_step / 2)
+    var k2_position = next_position(k1_position.mul(simulation_step / 2).add(position_0), k2_velocity, simulation_step / 2);
+
+    var k3_velocity = next_velocity(k2_velocity.mul(simulation_step / 2).add(velocity_0), forse, mass, simulation_step / 2);
+    var k3_position = next_position(k2_position.mul(simulation_step / 2).add(position_0), k3_velocity, simulation_step / 2);
+    
+    var k4_velocity = next_velocity(k3_velocity.add(velocity_0), forse, mass, simulation_step);
+    var k4_position = next_position(k3_position.add(position_0), k4_velocity, simulation_step);
+    
+    result_velocity = k1_velocity.clone();
+    result_velocity = result_velocity.add(k2_velocity.mul(2));
+    result_velocity = result_velocity.add(k3_velocity.mul(2));
+    result_velocity = result_velocity.add(k4_velocity);
+    result_velocity = result_velocity.div(6);
+    result_velocity = result_velocity.add(velocity_0);
+    
+    result_position = k1_position.clone();
+    result_position = result_position.add(k2_position.mul(2));
+    result_position = result_position.add(k3_position.mul(2));
+    result_position = result_position.add(k4_position);
+    result_position = result_position.div(6);
+    result_position = result_position.add(position_0);
+
+    entity.velocity = result_velocity.clone();
+    entity.position = result_position.clone();
 }
 
 var solve_physics = () =>
@@ -179,11 +202,9 @@ var solve_physics = () =>
 
             if(r.length() > Scene[j].size + Scene[i].size)
                 forse = forse.add(r.normalized().mul(G * (Scene[j].mass * Scene[i].mass) / r.length() ** 2));
-            else
-                Scene[j].speed = Scene[j].speed.mul(-1);
         }
-        
-        new_position(forse, Scene[i]);
+
+        euler(Scene[i], forse);
     }
 }
 
@@ -198,13 +219,6 @@ var view_entities = () =>
 
         ctx.strokeStyle = "#000000";
         ctx.moveTo(Scene[i].position.x, Scene[i].position.y);
-        
-        let end = Scene[i].position.add((Scene[i].acceleration).mul(100));
-        
-        // Стрелочка
-        ctx.lineTo(end.x, end.y);
-        ctx.lineWidth = 1;
-        ctx.stroke();
     }
 }
 
@@ -288,10 +302,10 @@ document.addEventListener('input', (event) =>
         l_substep_count_slider.textContent = `Количество межшагов: ${event.target.value}`
     }
 
-    if(event.target.id == "simulation_speed_slider")
+    if(event.target.id == "simulation_step_slider")
     {
-        simulation_speed = event.target.value * 1;
-        l_simulation_speed_slider.textContent = `Скорость: ${event.target.value} ус. ед.`
+        simulation_step = event.target.value * 1;
+        l_simulation_step_slider.textContent = `Скорость: ${event.target.value} ус. ед.`
     }
 
 });
@@ -374,9 +388,8 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
     l_mass_slider = document.getElementById("l_mass_slider");
     l_size_slider = document.getElementById("l_size_slider");
-    l_simulation_speed_slider = document.getElementById("l_simulation_speed_slider");
+    l_simulation_step_slider = document.getElementById("l_simulation_step_slider");
     l_substep_count_slider = document.getElementById("l_substep_count_slider");
-
+    
     frame();
-    //setInterval(frame, 100)
 });
