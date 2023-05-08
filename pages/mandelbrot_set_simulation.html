@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Множество Мандельброта - Симуляция</title>
+        <link rel="stylesheet" href="../styles/main.css">
+        <link rel="shortcut icon" type="image/png" href="../images/icon.png">
+        <script src="../scripts/mandelbrot_set.js"></script>
+    </head>
+    <body>
+        <section id="page">
+            <header>
+                <a href="../index.html">
+                    <div class="headed">
+                        <img src="../images/home.png" alt="Хаб" width="50px" height="50px">
+                        <p>Prizma</p>
+                    </div>
+                </a>
+                <div class="headed">
+                    <h1>Множество Мандельброта - Симуляция</h1>
+                </div>
+                <div class="headed">
+                    <p>Ко́мпле́ксные числа!1!!!1</p>
+                </div>
+            </header>
+
+            <navigation>
+                <a href="#">
+                    <div class="navigated">
+                        Общее
+                        <img src="../images/info_center.png" width="80px" height="80px" alt="Симуляция напряжённости электростатического поля с двумя зарядами">
+                    </div>
+                </a>
+                <div class="navigated">
+                    <a href="#">
+                        <div class="navigated">
+                            Математика
+                            <img src="../images/math_book.png" width="80px" height="80px" alt="Симуляция напряжённости электростатического поля с двумя зарядами">
+                        </div>
+                    </a>
+                </div>
+            </navigation>
+            <main>
+                <canvas id="simulationCanvas" width="500px" height="500px" color = "white"></canvas>
+                <h1>Управление</h1>
+                <p>
+                    'W', 'S', 'A', 'D' — перемещение по плоскости.
+                </p>
+                <label for="maximum_iterations_slider" id="l_maximum_iterations_slider">Количество итераций: 128</label>
+                <input id="maximum_iterations_slider" type="range" min="1" max="1024" value="128" step="1">
+                <label for="scale_slider" id="l_scale_slider">Масштаб: 0.01 ед. на пиксель</label>
+                <input id="scale_slider" type="range" min="0.0005" max="0.007" value="0.007" step="0.001">
+                <label for="transtation_exponent_slider" id="l_transtation_exponent_slider">Величина перемещения: 50 пикселя</label>
+                <input id="transtation_exponent_slider" type="range" min="1" max="100" value="50" step="1">
+            </main>
+            <footer>
+                <p>Сделал кто-то, когда-то, где-то</p>
+            </footer>
+        </section>
+    </body>
+</html>
