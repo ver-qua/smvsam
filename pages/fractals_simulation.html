@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Множество Мандельброта - Симуляция</title>
+        <title>Фракталы - Симуляция</title>
         <link rel="stylesheet" href="../styles/main.css">
         <link rel="shortcut icon" type="image/png" href="../images/icon.png">
-        <script src="../scripts/mandelbrot_set.js"></script>
+        <script src="../scripts/fractals.js"></script>
     </head>
     <body>
         <section id="page">
@@ -16,7 +16,7 @@
                     </div>
                 </a>
                 <div class="headed">
-                    <h1>Множество Мандельброта - Симуляция</h1>
+                    <h1>Фракталы - Симуляция</h1>
                 </div>
                 <div class="headed">
                     <p>Ко́мпле́ксные числа!1!!!1</p>
@@ -24,32 +24,47 @@
             </header>
 
             <navigation>
-                <a href="#">
+                <a href="fractals_home.html">
                     <div class="navigated">
                         Общее
                         <img src="../images/info_center.png" width="80px" height="80px" alt="Симуляция напряжённости электростатического поля с двумя зарядами">
                     </div>
                 </a>
-                <div class="navigated">
-                    <a href="#">
-                        <div class="navigated">
-                            Математика
-                            <img src="../images/math_book.png" width="80px" height="80px" alt="Симуляция напряжённости электростатического поля с двумя зарядами">
-                        </div>
-                    </a>
-                </div>
+                <a href="fractals_math.html">
+                    <div class="navigated">
+                        Математика
+                        <img src="../images/math_book.png" width="80px" height="80px" alt="Симуляция напряжённости электростатического поля с двумя зарядами">
+                    </div>
+                </a>
             </navigation>
             <main>
                 <canvas id="simulationCanvas" width="500px" height="500px" color = "white"></canvas>
+                <p id="p_info">X: -0.7 | Y: 0 | Масштаб: 0.007 ед. на пиксель</p>
                 <h1>Управление</h1>
                 <p>
                     'W', 'S', 'A', 'D' — перемещение по плоскости.
                 </p>
+                <p>
+                    'Q', 'E' — Уменьшение и увеличение масштаба соответственно.
+                </p>
+                <p>
+                    'R' — Вернуться к началу.
+                </p>
+                
+                <label for="fractal_select">Разные фракталы: </label>
+                <select id="fractal_select">
+                    <option value="1">Множество Мандельброта</option>
+                    <option value="2">Горящий корабль</option>
+                    <option value="3">Клякса?</option>
+                </select>  
+
+                <label for="step_size_slider" id="l_step_size_slider">Размер пикселя: 2</label>
+                <input id="step_size_slider" type="range" min="1" max="10" value="2" step="1">
+                
                 <label for="maximum_iterations_slider" id="l_maximum_iterations_slider">Количество итераций: 128</label>
                 <input id="maximum_iterations_slider" type="range" min="1" max="1024" value="128" step="1">
-                <label for="scale_slider" id="l_scale_slider">Масштаб: 0.01 ед. на пиксель</label>
-                <input id="scale_slider" type="range" min="0.0005" max="0.007" value="0.007" step="0.001">
-                <label for="transtation_exponent_slider" id="l_transtation_exponent_slider">Величина перемещения: 50 пикселя</label>
+
+                <label for="transtation_exponent_slider" id="l_transtation_exponent_slider">Величина перемещения: 50 пикселей</label>
                 <input id="transtation_exponent_slider" type="range" min="1" max="100" value="50" step="1">
             </main>
             <footer>
