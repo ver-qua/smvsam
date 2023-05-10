@@ -3,6 +3,18 @@ body
     background-color: lightblue;
     color: white;
     font-family: sans;
+    font-size: 15px;
+}
+
+ul
+{
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+li:not(:last-child) 
+{
+    margin-bottom: 10px;
 }
 
 a 
@@ -14,13 +26,19 @@ a
 a:hover 
 {
     color: lightcyan;
-    font-weight: bold;
     text-decoration: underline dashed;
 }
 
 h1
 {
     font-size: 20px;
+}
+
+h2
+{
+    font-size: 17px;
+    margin-top: 8px;
+    margin-bottom: 0px;
 }
 
 .slider 

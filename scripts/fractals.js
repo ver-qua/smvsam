@@ -57,7 +57,6 @@ var canvas = 0;
 var ctx = 0;
 
 var l_maximum_iterations = 0;
-var l_scale_slider = 0;
 var l_transtation_exponent_slider = 0;
 var l_step_size_slider = 0;
 var p_info = 0;
@@ -141,7 +140,6 @@ document.addEventListener("DOMContentLoaded", (event) =>
     ctx.font = "10px sans";
 
     l_maximum_iterations = document.getElementById("l_maximum_iterations_slider");
-    l_scale_slider = document.getElementById("l_scale_slider");
     l_transtation_exponent_slider = document.getElementById("l_transtation_exponent_slider");
     l_step_size_slider = document.getElementById("l_step_size_slider");
     p_info = document.getElementById("p_info");
@@ -149,7 +147,7 @@ document.addEventListener("DOMContentLoaded", (event) =>
     draw_fractal();
 });
 
-var change_values = () =>
+var reset_values = () =>
 {
     if(current_fractal == mandelbrot_set)
     {
@@ -169,6 +167,8 @@ var change_values = () =>
         center.assign(-0.7, 0);
         maximum_iterations = 20;
     }
+
+    l_maximum_iterations.textContent = `Количество итераций: ${maximum_iterations}`;
 }
 
 document.addEventListener("keypress", (event) => 
@@ -186,7 +186,9 @@ document.addEventListener("keypress", (event) =>
     else if(event.key === "e" || event.key === "у")
         scale -= scale / 10;
     else if(event.key === "r" || event.key === "к")
-        change_values();
+        reset_values();
+
+    console.log(event.key);
     
     draw_fractal();
     change_info();
@@ -208,7 +210,7 @@ document.addEventListener("change", (event) =>
                 current_fractal = blot;
                 break;
         }
-        change_values();
+        reset_values();
     }
 
     draw_fractal();
@@ -221,11 +223,6 @@ document.addEventListener("input", (event) =>
     {
         maximum_iterations = event.target.value * 1;
         l_maximum_iterations.textContent = `Количество итераций: ${maximum_iterations}`;
-    }
-    else if(event.target.id === "scale_slider")
-    {   
-        scale = event.target.value * 1;
-        l_scale_slider.textContent = `Масштаб: ${scale} ед. на пиксель`;
     }
     else if(event.target.id === "transtation_exponent_slider")
     {
