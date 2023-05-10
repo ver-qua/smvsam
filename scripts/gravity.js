@@ -15,9 +15,11 @@ var handmade_mass = 10;
 var handmade_size = 10;
 var handmade_color = "#aaff00";
 
-var example_select_value = 1;
+var canvas_rect = 0;
+var lust_x = 0;
+var lust_y = 0;
 
-var substep_count = 4;
+var example_select_value = 1;
 
 class vec
 {
@@ -155,27 +157,22 @@ var rk4 = (entity, forse) =>
     let position_0 = entity.position.clone();
     let mass = entity.mass;
 
-    var result_velocity = next_velocity(velocity_0, forse, mass, simulation_step);
-    var result_position = next_position(position_0, result_velocity, simulation_step);
-
     var k1_velocity = velocity_0.clone();
-    var k1_position = position_0.clone();
-
-    var k2_velocity = next_velocity(k1_velocity.mul(simulation_step / 2).add(velocity_0), forse, mass, simulation_step / 2)
-    var k2_position = next_position(k1_position.mul(simulation_step / 2).add(position_0), k2_velocity, simulation_step / 2);
-
-    var k3_velocity = next_velocity(k2_velocity.mul(simulation_step / 2).add(velocity_0), forse, mass, simulation_step / 2);
-    var k3_position = next_position(k2_position.mul(simulation_step / 2).add(position_0), k3_velocity, simulation_step / 2);
-    
+    var k2_velocity = next_velocity(k1_velocity.mul(1 / 2).add(velocity_0), forse, mass, simulation_step / 2);
+    var k3_velocity = next_velocity(k2_velocity.mul(1 / 2).add(velocity_0), forse, mass, simulation_step / 2);
     var k4_velocity = next_velocity(k3_velocity.add(velocity_0), forse, mass, simulation_step);
-    var k4_position = next_position(k3_position.add(position_0), k4_velocity, simulation_step);
-    
+
     result_velocity = k1_velocity.clone();
     result_velocity = result_velocity.add(k2_velocity.mul(2));
     result_velocity = result_velocity.add(k3_velocity.mul(2));
     result_velocity = result_velocity.add(k4_velocity);
     result_velocity = result_velocity.div(6);
     result_velocity = result_velocity.add(velocity_0);
+
+    var k1_position = position_0.clone();
+    var k2_position = next_position(k1_position.mul(1 / 2).add(position_0), result_velocity, simulation_step / 2);
+    var k3_position = next_position(k2_position.mul(1 / 2).add(position_0), result_velocity, simulation_step / 2);
+    var k4_position = next_position(k3_position.add(position_0), result_velocity, simulation_step);
     
     result_position = k1_position.clone();
     result_position = result_position.add(k2_position.mul(2));
@@ -289,20 +286,12 @@ document.addEventListener('input', (event) =>
         handmade_mass = event.target.value * 1;
         l_mass_slider.textContent = `Масса: ${event.target.value} ус. ед.`;
     }
-
-    if(event.target.id == "size_slider")
+    else if(event.target.id == "size_slider")
     {
         handmade_size = event.target.value * 1;
         l_size_slider.textContent = `Размер: ${event.target.value} ус. ед.`;
     }
-
-    if(event.target.id == "substep_count_slider")
-    {
-        substep_count = event.target.value * 1;
-        l_substep_count_slider.textContent = `Количество межшагов: ${event.target.value}`
-    }
-
-    if(event.target.id == "simulation_step_slider")
+    else if(event.target.id == "simulation_step_slider")
     {
         simulation_step = event.target.value * 1;
         l_simulation_step_slider.textContent = `Скорость: ${event.target.value} ус. ед.`
@@ -314,14 +303,12 @@ document.addEventListener('keydown', (event) =>
 {
     if(event.key === 'Control')
         ctrl_down = true;
-
-    if(ctrl_down && (event.key === 'z' || event.key === 'я'))
+    else if(ctrl_down && (event.key === 'z' || event.key === 'я'))
     {
         Scene.pop(Scene.size - 1);
         console.log('ЗА ЧТОООО!! НЕЕееееет.....');
     }
-
-    if(event.key === 'r' || event.key === 'к')
+    else if(event.key === 'r' || event.key === 'к')
         set_example(example_select_value);
 });
 
@@ -333,13 +320,12 @@ document.addEventListener('keyup', (event) =>
 
 document.addEventListener('mousedown', (event) =>
 {
-    const rect = canvas.getBoundingClientRect();
-    var lust_x = event.clientX - rect.left;
-    var lust_y = event.clientY - rect.top;
+    var lust_x = event.clientX - canvas_rect.left;
+    var lust_y = event.clientY - canvas_rect.top;
 
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
         return 0;
-
+        
     if(event.button === 0)
     {
         left_hold = true;
@@ -350,9 +336,8 @@ document.addEventListener('mousedown', (event) =>
 
 document.addEventListener('mouseup', (event) =>
 {
-    const rect = canvas.getBoundingClientRect();
-    var lust_x = event.clientX - rect.left;
-    var lust_y = event.clientY - rect.top;
+    var lust_x = event.clientX - canvas_rect.left;
+    var lust_y = event.clientY - canvas_rect.top;
     
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
         return 0
@@ -371,9 +356,11 @@ document.addEventListener("mousemove", (event) =>
 {
     if(left_hold)
     {
-        const rect = canvas.getBoundingClientRect();
-        var lust_x = event.clientX - rect.left;
-        var lust_y = event.clientY - rect.top;
+        lust_x = event.clientX - canvas_rect.left;
+        lust_y = event.clientY - canvas_rect.top;
+    
+        if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
+            return 0
 
         creation_end = new vec(lust_x, lust_y);
     }
@@ -389,7 +376,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
     l_mass_slider = document.getElementById("l_mass_slider");
     l_size_slider = document.getElementById("l_size_slider");
     l_simulation_step_slider = document.getElementById("l_simulation_step_slider");
-    l_substep_count_slider = document.getElementById("l_substep_count_slider");
+    canvas_rect = canvas.getBoundingClientRect();
     
     frame();
 });
