@@ -125,13 +125,13 @@ var set_example = () =>
 
 var next_velocity = (velocity, forse, mass, step) =>
 {
-    result_velocity = velocity.add(forse.div(mass).mul(step));
+    let result_velocity = velocity.add(forse.div(mass).mul(step));
     return result_velocity;
 }
 
 var next_position = (position, velocity, step) =>
 {
-    result_position = position.add(velocity.mul(step));
+    let result_position = position.add(velocity.mul(step));
     return result_position;
 }
 
@@ -141,8 +141,8 @@ var euler = (entity, forse) =>
     let position_0 = entity.position.clone();
     let mass = entity.mass;
 
-    var result_velocity = next_velocity(velocity_0, forse, mass, simulation_step / 2);
-    var result_position = next_position(position_0, result_velocity, simulation_step / 2);
+    let result_velocity = next_velocity(velocity_0, forse, mass, simulation_step / 2);
+    let result_position = next_position(position_0, result_velocity, simulation_step / 2);
 
     result_velocity = next_velocity(result_velocity, forse, mass, simulation_step / 2);
     result_position = next_position(result_position, result_velocity, simulation_step / 2);
@@ -157,28 +157,28 @@ var rk4 = (entity, forse) =>
     let position_0 = entity.position.clone();
     let mass = entity.mass;
 
-    var k1_velocity = velocity_0.clone();
-    var k2_velocity = next_velocity(k1_velocity.mul(1 / 2).add(velocity_0), forse, mass, simulation_step / 2);
-    var k3_velocity = next_velocity(k2_velocity.mul(1 / 2).add(velocity_0), forse, mass, simulation_step / 2);
-    var k4_velocity = next_velocity(k3_velocity.add(velocity_0), forse, mass, simulation_step);
+    let k1_velocity = velocity_0.clone();
+    let k2_velocity = next_velocity(k1_velocity.mul(simulation_step / 2).add(velocity_0), forse, mass, simulation_step / 2);
+    let k3_velocity = next_velocity(k2_velocity.mul(simulation_step / 2).add(velocity_0), forse, mass, simulation_step / 2);
+    let k4_velocity = next_velocity(k3_velocity.mul(simulation_step).add(velocity_0), forse, mass, simulation_step);
 
-    result_velocity = k1_velocity.clone();
+    let result_velocity = k1_velocity.clone();
     result_velocity = result_velocity.add(k2_velocity.mul(2));
     result_velocity = result_velocity.add(k3_velocity.mul(2));
     result_velocity = result_velocity.add(k4_velocity);
-    result_velocity = result_velocity.div(6);
+    result_velocity = result_velocity.mul(simulation_step / 6);
     result_velocity = result_velocity.add(velocity_0);
-
-    var k1_position = position_0.clone();
-    var k2_position = next_position(k1_position.mul(1 / 2).add(position_0), result_velocity, simulation_step / 2);
-    var k3_position = next_position(k2_position.mul(1 / 2).add(position_0), result_velocity, simulation_step / 2);
-    var k4_position = next_position(k3_position.add(position_0), result_velocity, simulation_step);
     
-    result_position = k1_position.clone();
+    let k1_position = position_0.clone();
+    let k2_position = next_position(k1_position.mul(simulation_step / 2).add(position_0), result_velocity, simulation_step / 2);
+    let k3_position = next_position(k2_position.mul(simulation_step / 2).add(position_0), result_velocity, simulation_step / 2);
+    let k4_position = next_position(k3_position.mul(simulation_step).add(position_0), result_velocity, simulation_step);
+    
+    let result_position = k1_position.clone();
     result_position = result_position.add(k2_position.mul(2));
     result_position = result_position.add(k3_position.mul(2));
     result_position = result_position.add(k4_position);
-    result_position = result_position.div(6);
+    result_position = result_position.mul(simulation_step / 6);
     result_position = result_position.add(position_0);
 
     entity.velocity = result_velocity.clone();
