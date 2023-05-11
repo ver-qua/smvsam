@@ -25,8 +25,10 @@ var mid_hold = false;
 var lust_x = 0;
 var lust_y = 0;
 
-var p_charge1 = document.getElementById("p_charge1");
-var p_charge2 = document.getElementById("p_charge2");
+var l_charge1 = 0;
+var l_charge2 = 0;
+
+var canvas_rect = 0;
 
 var calculateEquipotentials = () =>
 {
@@ -183,6 +185,9 @@ document.addEventListener('DOMContentLoaded', (event) =>
 {
     canvas = document.getElementById("simulationCanvas");
     ctx = canvas.getContext("2d");
+    canvas_rect = canvas.getBoundingClientRect();
+    l_charge1 = document.getElementById("l_charge1");
+    l_charge2 = document.getElementById("l_charge2");
 
     calculateEquipotentials();
 
@@ -191,12 +196,11 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
 document.addEventListener('mousedown', (event) =>
 {
-    const rect = canvas.getBoundingClientRect();
-    lust_x = event.clientX - rect.left;
-    lust_y = event.clientY - rect.top;
+    lust_x = event.clientX - canvas_rect.left;
+    lust_y = event.clientY - canvas_rect.top;
 
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
-        return 0
+        return 0;
 
     if(event.button === 0)
         left_hold = true;
@@ -211,12 +215,15 @@ document.addEventListener('mousedown', (event) =>
 
 document.addEventListener('mouseup', (event) =>
 {
-    const rect = canvas.getBoundingClientRect();
-    lust_x = event.clientX - rect.left;
-    lust_y = event.clientY - rect.top;
+    lust_x = event.clientX - canvas_rect.left;
+    lust_y = event.clientY - canvas_rect.top;
     
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
-        return 0
+    {
+        left_hold = false;
+        mid_hold = false;
+        return 0;
+    }
 
     if(event.button === 0)
         left_hold = false;
@@ -231,9 +238,8 @@ document.addEventListener('mouseup', (event) =>
 
 document.addEventListener('mousemove', (event) =>
 {
-    const rect = canvas.getBoundingClientRect();
-    lust_x = event.clientX - rect.left;
-    lust_y = event.clientY - rect.top;
+    lust_x = event.clientX - canvas_rect.left;
+    lust_y = event.clientY - canvas_rect.top;
 
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
         return 0
@@ -249,12 +255,12 @@ document.addEventListener('input', (event) =>
     if(event.target.id == "slider_charge1")
     {
         charge1.q = event.target.value * Math.pow(10, -6);
-        p_charge1.textContent = `${event.target.value} * 10^-6 В/м`;
+        l_charge1.textContent = `${event.target.value} * 10^-6 В/м`;
     }
     else if(event.target.id == "slider_charge2")
     {
         charge2.q = event.target.value * Math.pow(10, -6);
-        p_charge2.textContent = `${event.target.value} * 10^-6 В/м`;    
+        l_charge2.textContent = `${event.target.value} * 10^-6 В/м`;    
     }
     else if(event.target.id == "slider_brightness")
         brightness = event.target.value * 1;
