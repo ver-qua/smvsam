@@ -120,6 +120,11 @@ var set_example = () =>
             Scene.push(new Entity("Beta", 100, new vec(200, 250), new vec(0, -1), 8, "#29c675"));
             Scene.push(new Entity("Gamma", 100, new vec(250, 175), new vec(1, 0), 8, "#4459e2"));
             break;
+        case 4:
+            Scene.push(new Entity("Sun", 10000, new vec(250, 250), new vec(), 15, "#ffff00"));
+            Scene.push(new Entity("Alpha", 10, new vec(150, 250), new vec(0, -10), 10, "#29c675"));
+            Scene.push(new Entity("Beta", 0.001, new vec(100, 250), new vec(0, -8), 5, "#aaaaaa"));
+            break;
     }
 }
 
@@ -320,8 +325,8 @@ document.addEventListener('keyup', (event) =>
 
 document.addEventListener('mousedown', (event) =>
 {
-    var lust_x = event.clientX - canvas_rect.left;
-    var lust_y = event.clientY - canvas_rect.top;
+    lust_x = event.clientX - canvas_rect.left + window.pageXOffset;
+    lust_y = event.clientY - canvas_rect.top + window.pageYOffset;
 
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
         return 0;
@@ -336,8 +341,8 @@ document.addEventListener('mousedown', (event) =>
 
 document.addEventListener('mouseup', (event) =>
 {
-    var lust_x = event.clientX - canvas_rect.left;
-    var lust_y = event.clientY - canvas_rect.top;
+    lust_x = event.clientX - canvas_rect.left + window.pageXOffset;
+    lust_y = event.clientY - canvas_rect.top + window.pageYOffset;
     
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
         return 0
@@ -356,8 +361,8 @@ document.addEventListener("mousemove", (event) =>
 {
     if(left_hold)
     {
-        lust_x = event.clientX - canvas_rect.left;
-        lust_y = event.clientY - canvas_rect.top;
+        lust_x = event.clientX - canvas_rect.left + window.pageXOffset;
+        lust_y = event.clientY - canvas_rect.top + window.pageYOffset;
     
         if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
             return 0

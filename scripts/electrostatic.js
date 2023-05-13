@@ -196,8 +196,8 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
 document.addEventListener('mousedown', (event) =>
 {
-    lust_x = event.clientX - canvas_rect.left;
-    lust_y = event.clientY - canvas_rect.top;
+    lust_x = event.clientX - canvas_rect.left + window.pageXOffset;
+    lust_y = event.clientY - canvas_rect.top + window.pageYOffset;
 
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
         return 0;
@@ -215,8 +215,8 @@ document.addEventListener('mousedown', (event) =>
 
 document.addEventListener('mouseup', (event) =>
 {
-    lust_x = event.clientX - canvas_rect.left;
-    lust_y = event.clientY - canvas_rect.top;
+    lust_x = event.clientX - canvas_rect.left + window.pageXOffset;
+    lust_y = event.clientY - canvas_rect.top + window.pageYOffset;
     
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
     {
@@ -238,8 +238,8 @@ document.addEventListener('mouseup', (event) =>
 
 document.addEventListener('mousemove', (event) =>
 {
-    lust_x = event.clientX - canvas_rect.left;
-    lust_y = event.clientY - canvas_rect.top;
+    lust_x = event.clientX - canvas_rect.left + window.pageXOffset;
+    lust_y = event.clientY - canvas_rect.top + window.pageYOffset;
 
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
         return 0
