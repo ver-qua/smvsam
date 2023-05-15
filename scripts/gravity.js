@@ -105,7 +105,7 @@ var Scene = new Array();
 
 var elevate = (scene) =>
 {
-    let result_d_scene = new Array();
+    let result_d_scene = new Array(scene.length);
 
     for(i = 0; i < scene.length; i++)
     {   
@@ -121,30 +121,29 @@ var elevate = (scene) =>
             if(r.length() > scene[j].size + scene[i].size)
                 acceleration = acceleration.add(r.div(r_len ** 3).mul(G * (scene[j].mass)));
         }
-
-        result_d_scene.push(new DEntity(scene[i].velocity.clone(), acceleration));
+        result_d_scene[i] = new DEntity(scene[i].velocity.clone(), acceleration);
     }
 
     return result_d_scene;
 }
 
-var sum_d_scenes = (scene1, scene2) =>
+var sum_d_scenes = (d_scene1, d_scene2) =>
 {
-    let result_scene = new Array(scene1.size);
+    let result_d_scene = new Array(d_scene1.length);
 
-    for(i = 0; i < scene1.length(); i++)
+    for(i = 0; i < d_scene1.length; i++)
     {
-        result_scene[i] = new Entity(scene1.name, scene1.mass, scene1.position.add(scene2.position), scene1.velocity.add(scene2.velocity), scene1.size, scene1.color);
+        result_d_scene[i] = new DEntity(d_scene1[i].velocity.add(d_scene2[i].velocity), d_scene1[i].acceleration.add(d_scene2[i].acceleration));
     }
 
-    return result_scene;
+    return result_d_scene;
 }
 
 var mul_d_scene = (d_scene, exponent) =>
 {
-    let result_d_scene = new Array(d_scene.size);
+    let result_d_scene = new Array(d_scene.length);
 
-    for(i = 0; i < d_scene.size(); i++)
+    for(i = 0; i < d_scene.length; i++)
     {
         result_d_scene[i] = new DEntity(d_scene[i].velocity.mul(exponent), d_scene[i].acceleration.mul(exponent));
     }
@@ -154,11 +153,11 @@ var mul_d_scene = (d_scene, exponent) =>
 
 var add_d_scene = (scene, d_scene) =>
 {
-    let result_scene = new Array(scene.size);
+    let result_scene = new Array(scene.length);
 
-    for(i = 0; i < scene.length(); i++)
+    for(i = 0; i < scene.length; i++)
     {
-        result_scene[i] = new Entity(scene.name, scene.mass, scene.position.add(d_scene.velocity), scene.velocity.add(d_scene.acceleration), scene.size, scene.color);
+        result_scene[i] = new Entity(scene[i].name, scene[i].mass, scene[i].position.add(d_scene[i].velocity), scene[i].velocity.add(d_scene[i].acceleration), scene[i].size, scene[i].color);
     }
 
     return result_scene;
@@ -171,7 +170,7 @@ var rk4 = () =>
     k3 = elevate(add_d_scene(Scene, mul_d_scene(k2, simulation_step / 2)));
     k4 = elevate(add_d_scene(Scene, mul_d_scene(k3, simulation_step)));
 
-    Scene
+    Scene = add_d_scene(Scene, mul_d_scene(sum_d_scenes(sum_d_scenes(k1,mul_d_scene(k2, 2)), sum_d_scenes(mul_d_scene(k3, 2), k4)), simulation_step / 6));
 }
 
 var set_example = () =>
@@ -202,34 +201,6 @@ var set_example = () =>
     }
 }
 
-var next_velocity = (velocity, forse, mass, step) =>
-{
-    let result_velocity = velocity.add(forse.div(mass).mul(step));
-    return result_velocity;
-}
-
-var next_position = (position, velocity, step) =>
-{
-    let result_position = position.add(velocity.mul(step));
-    return result_position;
-}
-
-var euler = (entity, forse) =>
-{
-    let velocity_0 = entity.velocity.clone();
-    let position_0 = entity.position.clone();
-    let mass = entity.mass;
-
-    let result_velocity = next_velocity(velocity_0, forse, mass, simulation_step / 2);
-    let result_position = next_position(position_0, result_velocity, simulation_step / 2);
-
-    result_velocity = next_velocity(result_velocity, forse, mass, simulation_step / 2);
-    result_position = next_position(result_position, result_velocity, simulation_step / 2);
-
-    entity.velocity = result_velocity.clone();
-    entity.position = result_position.clone();
-}
-
 var solve_physics = () =>
 {
     for(i = 0; i < Scene.length; i++)
@@ -246,7 +217,7 @@ var solve_physics = () =>
                 forse = forse.add(r.normalized().mul(G * (Scene[j].mass * Scene[i].mass) / r.length() ** 2));
         }
 
-        euler(Scene[i], forse);
+        rk4();
     }
 }
 
