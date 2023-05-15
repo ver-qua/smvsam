@@ -92,8 +92,87 @@ class Entity
     }
 }
 
+class DEntity
+{
+    constructor(velocity, acceleration)
+    {
+        this.velocity = velocity;
+        this.acceleration = acceleration;
+    }
+}
+
 var Scene = new Array();
-var PrevScene = new Array();
+
+var elevate = (scene) =>
+{
+    let result_d_scene = new Array();
+
+    for(i = 0; i < scene.length; i++)
+    {   
+        let acceleration = new vec();
+        for(j = 0; j < scene.length; j++)
+        {   
+            if(i == j)
+                continue;
+            
+            let r = new vec(scene[j].position.x - scene[i].position.x, scene[j].position.y - scene[i].position.y);
+            let r_len = r.length();
+
+            if(r.length() > scene[j].size + scene[i].size)
+                acceleration = acceleration.add(r.div(r_len ** 3).mul(G * (scene[j].mass)));
+        }
+
+        result_d_scene.push(new DEntity(scene[i].velocity.clone(), acceleration));
+    }
+
+    return result_d_scene;
+}
+
+var sum_d_scenes = (scene1, scene2) =>
+{
+    let result_scene = new Array(scene1.size);
+
+    for(i = 0; i < scene1.length(); i++)
+    {
+        result_scene[i] = new Entity(scene1.name, scene1.mass, scene1.position.add(scene2.position), scene1.velocity.add(scene2.velocity), scene1.size, scene1.color);
+    }
+
+    return result_scene;
+}
+
+var mul_d_scene = (d_scene, exponent) =>
+{
+    let result_d_scene = new Array(d_scene.size);
+
+    for(i = 0; i < d_scene.size(); i++)
+    {
+        result_d_scene[i] = new DEntity(d_scene[i].velocity.mul(exponent), d_scene[i].acceleration.mul(exponent));
+    }
+
+    return result_d_scene;
+}
+
+var add_d_scene = (scene, d_scene) =>
+{
+    let result_scene = new Array(scene.size);
+
+    for(i = 0; i < scene.length(); i++)
+    {
+        result_scene[i] = new Entity(scene.name, scene.mass, scene.position.add(d_scene.velocity), scene.velocity.add(d_scene.acceleration), scene.size, scene.color);
+    }
+
+    return result_scene;
+}
+
+var rk4 = () =>
+{
+    k1 = elevate(Scene);
+    k2 = elevate(add_d_scene(Scene, mul_d_scene(k1, simulation_step / 2)));
+    k3 = elevate(add_d_scene(Scene, mul_d_scene(k2, simulation_step / 2)));
+    k4 = elevate(add_d_scene(Scene, mul_d_scene(k3, simulation_step)));
+
+    Scene
+}
 
 var set_example = () =>
 {
@@ -119,11 +198,6 @@ var set_example = () =>
             Scene.push(new Entity("Alpha", 100, new vec(300, 250), new vec(-1, 0), 8, "#c66d29"));
             Scene.push(new Entity("Beta", 100, new vec(200, 250), new vec(0, -1), 8, "#29c675"));
             Scene.push(new Entity("Gamma", 100, new vec(250, 175), new vec(1, 0), 8, "#4459e2"));
-            break;
-        case 4:
-            Scene.push(new Entity("Sun", 10000, new vec(250, 250), new vec(), 15, "#ffff00"));
-            Scene.push(new Entity("Alpha", 10, new vec(150, 250), new vec(0, -10), 10, "#29c675"));
-            Scene.push(new Entity("Beta", 0.001, new vec(100, 250), new vec(0, -8), 5, "#aaaaaa"));
             break;
     }
 }
@@ -151,40 +225,6 @@ var euler = (entity, forse) =>
 
     result_velocity = next_velocity(result_velocity, forse, mass, simulation_step / 2);
     result_position = next_position(result_position, result_velocity, simulation_step / 2);
-
-    entity.velocity = result_velocity.clone();
-    entity.position = result_position.clone();
-}
-
-var rk4 = (entity, forse) =>
-{
-    let velocity_0 = entity.velocity.clone();
-    let position_0 = entity.position.clone();
-    let mass = entity.mass;
-
-    let k1_velocity = velocity_0.clone();
-    let k2_velocity = next_velocity(k1_velocity.mul(simulation_step / 2).add(velocity_0), forse, mass, simulation_step / 2);
-    let k3_velocity = next_velocity(k2_velocity.mul(simulation_step / 2).add(velocity_0), forse, mass, simulation_step / 2);
-    let k4_velocity = next_velocity(k3_velocity.mul(simulation_step).add(velocity_0), forse, mass, simulation_step);
-
-    let result_velocity = k1_velocity.clone();
-    result_velocity = result_velocity.add(k2_velocity.mul(2));
-    result_velocity = result_velocity.add(k3_velocity.mul(2));
-    result_velocity = result_velocity.add(k4_velocity);
-    result_velocity = result_velocity.mul(simulation_step / 6);
-    result_velocity = result_velocity.add(velocity_0);
-    
-    let k1_position = position_0.clone();
-    let k2_position = next_position(k1_position.mul(simulation_step / 2).add(position_0), result_velocity, simulation_step / 2);
-    let k3_position = next_position(k2_position.mul(simulation_step / 2).add(position_0), result_velocity, simulation_step / 2);
-    let k4_position = next_position(k3_position.mul(simulation_step).add(position_0), result_velocity, simulation_step);
-    
-    let result_position = k1_position.clone();
-    result_position = result_position.add(k2_position.mul(2));
-    result_position = result_position.add(k3_position.mul(2));
-    result_position = result_position.add(k4_position);
-    result_position = result_position.mul(simulation_step / 6);
-    result_position = result_position.add(position_0);
 
     entity.velocity = result_velocity.clone();
     entity.position = result_position.clone();
@@ -325,8 +365,8 @@ document.addEventListener('keyup', (event) =>
 
 document.addEventListener('mousedown', (event) =>
 {
-    lust_x = event.clientX - canvas_rect.left + window.pageXOffset;
-    lust_y = event.clientY - canvas_rect.top + window.pageYOffset;
+    var lust_x = event.clientX - canvas_rect.left;
+    var lust_y = event.clientY - canvas_rect.top;
 
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
         return 0;
@@ -341,8 +381,8 @@ document.addEventListener('mousedown', (event) =>
 
 document.addEventListener('mouseup', (event) =>
 {
-    lust_x = event.clientX - canvas_rect.left + window.pageXOffset;
-    lust_y = event.clientY - canvas_rect.top + window.pageYOffset;
+    var lust_x = event.clientX - canvas_rect.left;
+    var lust_y = event.clientY - canvas_rect.top;
     
     if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
         return 0
@@ -361,8 +401,8 @@ document.addEventListener("mousemove", (event) =>
 {
     if(left_hold)
     {
-        lust_x = event.clientX - canvas_rect.left + window.pageXOffset;
-        lust_y = event.clientY - canvas_rect.top + window.pageYOffset;
+        lust_x = event.clientX - canvas_rect.left;
+        lust_y = event.clientY - canvas_rect.top;
     
         if(lust_x < 0 || lust_y < 0 || lust_x > canvas.width || lust_y > canvas.height)
             return 0
