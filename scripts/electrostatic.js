@@ -28,8 +28,6 @@ var lust_y = 0;
 var l_charge1 = 0;
 var l_charge2 = 0;
 
-var canvas_rect = 0;
-
 var calculateEquipotentials = () =>
 {
     equipotentials = equipotentials.splice(0, equipotentials.length);
@@ -185,7 +183,6 @@ document.addEventListener('DOMContentLoaded', (event) =>
 {
     canvas = document.getElementById("simulationCanvas");
     ctx = canvas.getContext("2d");
-    canvas_rect = canvas.getBoundingClientRect();
     l_charge1 = document.getElementById("l_charge1");
     l_charge2 = document.getElementById("l_charge2");
 
@@ -196,6 +193,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
 
 document.addEventListener('mousedown', (event) =>
 {
+    let canvas_rect = canvas.getBoundingClientRect();
     lust_x = event.clientX - canvas_rect.left + window.pageXOffset;
     lust_y = event.clientY - canvas_rect.top + window.pageYOffset;
 
@@ -215,6 +213,7 @@ document.addEventListener('mousedown', (event) =>
 
 document.addEventListener('mouseup', (event) =>
 {
+    let canvas_rect = canvas.getBoundingClientRect();
     lust_x = event.clientX - canvas_rect.left + window.pageXOffset;
     lust_y = event.clientY - canvas_rect.top + window.pageYOffset;
     
@@ -238,6 +237,7 @@ document.addEventListener('mouseup', (event) =>
 
 document.addEventListener('mousemove', (event) =>
 {
+    let canvas_rect = canvas.getBoundingClientRect();
     lust_x = event.clientX - canvas_rect.left + window.pageXOffset;
     lust_y = event.clientY - canvas_rect.top + window.pageYOffset;
 

@@ -15,7 +15,6 @@ var handmade_mass = 10;
 var handmade_size = 10;
 var handmade_color = "#aaff00";
 
-var canvas_rect = 0;
 var lust_x = 0;
 var lust_y = 0;
 
@@ -101,7 +100,7 @@ class DEntity
     }
 }
 
-var Scene = new Array();
+// Вычисление производной для системы или дифференциирование
 
 var elevate = (scene) =>
 {
@@ -110,6 +109,7 @@ var elevate = (scene) =>
     for(i = 0; i < scene.length; i++)
     {   
         let acceleration = new vec();
+
         for(j = 0; j < scene.length; j++)
         {   
             if(i == j)
@@ -121,11 +121,14 @@ var elevate = (scene) =>
             if(r.length() > scene[j].size + scene[i].size)
                 acceleration = acceleration.add(r.div(r_len ** 3).mul(G * (scene[j].mass)));
         }
+
         result_d_scene[i] = new DEntity(scene[i].velocity.clone(), acceleration);
     }
 
     return result_d_scene;
 }
+
+// Сумма производных сцены
 
 var sum_d_scenes = (d_scene1, d_scene2) =>
 {
@@ -139,6 +142,8 @@ var sum_d_scenes = (d_scene1, d_scene2) =>
     return result_d_scene;
 }
 
+// Умножение производной на число и сложение её с системой или интегрирование
+
 var mul_d_scene = (d_scene, exponent) =>
 {
     let result_d_scene = new Array(d_scene.length);
@@ -150,6 +155,8 @@ var mul_d_scene = (d_scene, exponent) =>
 
     return result_d_scene;
 }
+
+// Всё ещё интегрирование
 
 var add_d_scene = (scene, d_scene) =>
 {
@@ -163,12 +170,20 @@ var add_d_scene = (scene, d_scene) =>
     return result_scene;
 }
 
+var Scene = new Array();
+
+/*
+    Метод Рунге — Кутта
+    Лучшее его объяснения находится на соответствующей странице
+*/
+
 var rk4 = () =>
 {
     k1 = elevate(Scene);
     k2 = elevate(add_d_scene(Scene, mul_d_scene(k1, simulation_step / 2)));
     k3 = elevate(add_d_scene(Scene, mul_d_scene(k2, simulation_step / 2)));
     k4 = elevate(add_d_scene(Scene, mul_d_scene(k3, simulation_step)));
+
 
     Scene = add_d_scene(Scene, mul_d_scene(sum_d_scenes(sum_d_scenes(k1,mul_d_scene(k2, 2)), sum_d_scenes(mul_d_scene(k3, 2), k4)), simulation_step / 6));
 }
@@ -201,24 +216,11 @@ var set_example = () =>
     }
 }
 
+// :3
+
 var solve_physics = () =>
 {
-    for(i = 0; i < Scene.length; i++)
-    {   
-        let forse = new vec();
-        for(j = 0; j < Scene.length; j++)
-        {   
-            if(i == j)
-                continue;
-            
-            let r = new vec(Scene[j].position.x - Scene[i].position.x, Scene[j].position.y - Scene[i].position.y);
-
-            if(r.length() > Scene[j].size + Scene[i].size)
-                forse = forse.add(r.normalized().mul(G * (Scene[j].mass * Scene[i].mass) / r.length() ** 2));
-        }
-
-        rk4();
-    }
+    rk4();
 }
 
 var view_entities = () =>
@@ -336,6 +338,7 @@ document.addEventListener('keyup', (event) =>
 
 document.addEventListener('mousedown', (event) =>
 {
+    let canvas_rect = canvas.getBoundingClientRect();
     var lust_x = event.clientX - canvas_rect.left;
     var lust_y = event.clientY - canvas_rect.top;
 
@@ -352,6 +355,7 @@ document.addEventListener('mousedown', (event) =>
 
 document.addEventListener('mouseup', (event) =>
 {
+    let canvas_rect = canvas.getBoundingClientRect();
     var lust_x = event.clientX - canvas_rect.left;
     var lust_y = event.clientY - canvas_rect.top;
     
@@ -372,6 +376,7 @@ document.addEventListener("mousemove", (event) =>
 {
     if(left_hold)
     {
+        let canvas_rect = canvas.getBoundingClientRect();
         lust_x = event.clientX - canvas_rect.left;
         lust_y = event.clientY - canvas_rect.top;
     
@@ -392,7 +397,6 @@ document.addEventListener('DOMContentLoaded', (event) =>
     l_mass_slider = document.getElementById("l_mass_slider");
     l_size_slider = document.getElementById("l_size_slider");
     l_simulation_step_slider = document.getElementById("l_simulation_step_slider");
-    canvas_rect = canvas.getBoundingClientRect();
     
     frame();
 });

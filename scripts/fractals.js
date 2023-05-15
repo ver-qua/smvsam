@@ -106,6 +106,7 @@ var blot = (i, j) =>
     while(Z.len_sqrd() <= 4 && took < maximum_iterations)
     {
         took++;
+        // Мамма Mia!
         Z = Z.mul(Z.add(C.inv())).add(C.add(C.mul(C.abs()))).mul(Z.add(C.inv())).add(C.add(C.mul(C.abs())));
     }
 }
@@ -122,7 +123,7 @@ var draw_fractal = () =>
         {
             current_fractal(i, j);
         
-            ctx.fillStyle = `rgba(${(took / maximum_iterations) * 205}, ${(took / maximum_iterations) * 255}, ${(took / maximum_iterations) * 225}, ${(took / maximum_iterations) * 255})`;
+            ctx.fillStyle = `rgb(${(took / maximum_iterations) * 205}, ${(took / maximum_iterations) * 255}, ${(took / maximum_iterations) * 225})`;
             ctx.fillRect(i, j, step_size, step_size);
         }
     }
